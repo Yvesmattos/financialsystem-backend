@@ -48,6 +48,7 @@ public class ReceitaService {
 	@Transactional
 	public Receita insert(Receita receita) {
 		receita.setId(null);
+		receita.setUser(new UserAccount(null, "Yves Mattos", "yvesmattos@gmail.com"));
 		receita.setDataAlteracao(new Date());
 		receita.getUser().getReceitas().add(receita);
 		receita = repository.save(receita);
