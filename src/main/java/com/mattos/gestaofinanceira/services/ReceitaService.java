@@ -23,7 +23,7 @@ public class ReceitaService {
 
 	@Autowired
 	private ReceitaRepository repository;
-
+	
 	@Autowired
 	private UserAccountRepository userRep;
 
@@ -48,7 +48,7 @@ public class ReceitaService {
 	@Transactional
 	public Receita insert(Receita receita) {
 		receita.setId(null);
-		receita.setUser(new UserAccount(null, "Yves Mattos", "yvesmattos@gmail.com"));
+		receita.setUser(new UserAccount(1, "Yves Mattos", "yvesmattos@gmail.com"));
 		receita.setDataAlteracao(new Date());
 		receita.getUser().getReceitas().add(receita);
 		receita = repository.save(receita);
