@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mattos.gestaofinanceira.domain.Receita;
-import com.mattos.gestaofinanceira.domain.UserAccount;
 import com.mattos.gestaofinanceira.dto.ReceitaNewDTO;
 import com.mattos.gestaofinanceira.dto.ReceitaUpdateDTO;
 import com.mattos.gestaofinanceira.repositories.ReceitaRepository;
@@ -26,6 +25,8 @@ public class ReceitaService {
 	
 	@Autowired
 	private UserAccountRepository userRep;
+	
+	
 
 	public Receita find(Integer id) {
 		Optional<Receita> receita = repository.findById(id);
@@ -48,9 +49,8 @@ public class ReceitaService {
 	@Transactional
 	public Receita insert(Receita receita) {
 		receita.setId(null);
-		receita.setUser(new UserAccount(1, "Yves Mattos", "yvesmattos@gmail.com"));
-		receita.setDataAlteracao(new Date());
 		receita.getUser().getReceitas().add(receita);
+		receita.setDataAlteracao(new Date());
 		receita = repository.save(receita);
 
 		return receita;
@@ -77,11 +77,12 @@ public class ReceitaService {
 	}
 
 	public Receita fromDTO(ReceitaNewDTO dto) {
-		UserAccount user = userRep.findById(dto.getUserId()).get();
 
+		
+		
 		Receita receita = new Receita(null, dto.getNomeReceita(), dto.getDataCredito(), dto.getOrigem(),
 				dto.getMesReferencia(), dto.getValorReceita(), dto.getMeioPagamento(), dto.getFormaPagamento(),
-				dto.getValorPago(), user, dto.getSituacao());
+				dto.getValorPago(), userRep.getOne(1), dto.getSituacao());
 
 		return receita;
 	}

@@ -9,10 +9,10 @@ import com.mattos.gestaofinanceira.domain.UserAccount;
 import com.mattos.gestaofinanceira.repositories.UserAccountRepository;
 
 @SpringBootApplication
-public class GestaoFinanceiraApplication implements CommandLineRunner {
+public class GestaoFinanceiraApplication implements CommandLineRunner{
 	
 	@Autowired
-	private UserAccountRepository userRep;
+	private UserAccountRepository user;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(GestaoFinanceiraApplication.class, args);
@@ -20,9 +20,7 @@ public class GestaoFinanceiraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		
-		UserAccount user = new UserAccount(null, "Yves Mattos", "yvesmattos@gmail.com");
-		userRep.save(user);
+		user.save(new UserAccount(null, "Yves Mattos", "yvesmattos@gmail.com"));
 		
 	}
 

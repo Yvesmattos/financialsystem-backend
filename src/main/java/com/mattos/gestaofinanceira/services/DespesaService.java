@@ -27,6 +27,7 @@ public class DespesaService {
 	@Autowired
 	private UserAccountRepository userRep;
 	
+	
 	public Despesa find(Integer id) {
 		Optional<Despesa> despesa = repository.findById(id);
 
@@ -47,7 +48,10 @@ public class DespesaService {
 	@Transactional
 	public Despesa insert(Despesa despesa) {
 		despesa.setId(null);
-		despesa.setUser(new UserAccount(1, "Yves Mattos", "yvesmattos@gmail.com"));
+		if(userRep.getOne(1) == null) {
+			userRep.save(new UserAccount(null, "Yves Mattos", "yvesmattos@gmail.com"));			
+		}
+		despesa.setUser(userRep.getOne(1));
 		despesa.setDataAlteracao(new Date());
 		despesa.getUser().getDespesas().add(despesa);
 		despesa = repository.save(despesa);
