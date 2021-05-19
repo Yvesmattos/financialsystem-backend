@@ -191,4 +191,14 @@ public class Receita implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Receita [id=" + id + ", nomeReceita=" + nomeReceita + ", dataAlteracao=" + dataAlteracao + ", origem="
+				+ origem + ", mesReferencia=" + mesReferencia + ", dataCredito=" + dataCredito + ", valorReceita="
+				+ valorReceita + ", formaPagamento=" + formaPagamento + ", meioPagamento=" + meioPagamento
+				+ ", valorPago=" + valorPago + ", situacao=" + situacao + ", user=" + user + "]";
+	}
+	
+	
+
 }

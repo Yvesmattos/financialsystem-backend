@@ -160,4 +160,12 @@ public class ReceitaUpdateDTO implements Serializable {
 		this.situacao = situacao.getCod();
 	}
 
+	@Override
+	public String toString() {
+		return "ReceitaUpdateDTO [id=" + id + ", nomeReceita=" + nomeReceita + ", dataAlteracao=" + dataAlteracao
+				+ ", origem=" + origem + ", mesReferencia=" + mesReferencia + ", dataTermino=" + dataTermino
+				+ ", dataCredito=" + dataCredito + ", meioPagamento=" + meioPagamento + ", formaPagamento="
+				+ formaPagamento + ", valorReceita=" + valorReceita + ", valorPago=" + valorPago + ", situacao="
+				+ situacao + "]";
+	}
 }

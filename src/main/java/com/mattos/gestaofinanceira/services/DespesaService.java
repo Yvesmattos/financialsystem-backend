@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mattos.gestaofinanceira.domain.Despesa;
 import com.mattos.gestaofinanceira.domain.UserAccount;
 import com.mattos.gestaofinanceira.dto.DespesaNewDTO;
+import com.mattos.gestaofinanceira.dto.DespesaPageDTO;
 import com.mattos.gestaofinanceira.dto.DespesaUpdateDTO;
 import com.mattos.gestaofinanceira.repositories.DespesaRepository;
 import com.mattos.gestaofinanceira.repositories.UserAccountRepository;
@@ -26,8 +27,7 @@ public class DespesaService {
 
 	@Autowired
 	private UserAccountRepository userRep;
-	
-	
+
 	public Despesa find(Integer id) {
 		Optional<Despesa> despesa = repository.findById(id);
 
@@ -41,19 +41,35 @@ public class DespesaService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Despesa> findPage(Pageable pageable) {
-		return repository.findAll(pageable);
+	public Page<Despesa> findAllPaginated(DespesaPageDTO dto, Pageable pageable) {
+
+		int auxSit = dto.getSituacao() != null ? dto.getSituacao().getCod() : 0;
+		String auxDate = dto.getMesReferencia() != null ? dto.getMesReferencia().toString() : "";
+
+		if (dto.getFavorecido() == null) {
+			dto.setFavorecido("");
+		}
+		if (dto.getNomeDespesa() == null) {
+			dto.setNomeDespesa("");
+		}
+		if (dto.getFormaPagamento() == null) {
+			dto.setFormaPagamento("");
+		}
+		if (dto.getMeioPagamento() == null) {
+			dto.setMeioPagamento("");
+		}
+
+		System.out.println(dto.getFavorecido());
+
+		return repository.findAllPaginated(dto.getNomeDespesa(), dto.getFavorecido(), dto.getFormaPagamento(),
+				dto.getMeioPagamento(), pageable);
 	}
 
 	@Transactional
 	public Despesa insert(Despesa despesa) {
 		despesa.setId(null);
-		if(userRep.getOne(1) == null) {
-			userRep.save(new UserAccount(null, "Yves Mattos", "yvesmattos@gmail.com"));			
-		}
-		despesa.setUser(userRep.getOne(1));
-		despesa.setDataAlteracao(new Date());
 		despesa.getUser().getDespesas().add(despesa);
+		despesa.setDataAlteracao(new Date());
 		despesa = repository.save(despesa);
 
 		return despesa;
@@ -68,7 +84,6 @@ public class DespesaService {
 		Despesa novaDespesa = find(despesa.getId());
 		updateData(despesa, novaDespesa);
 		despesa.setDataAlteracao(new Date());
-
 		return repository.save(novaDespesa);
 	}
 
@@ -81,7 +96,13 @@ public class DespesaService {
 	}
 
 	public Despesa fromDTO(DespesaNewDTO dto) {
-		UserAccount user = userRep.findById(dto.getUserId()).get();
+		UserAccount user;
+
+		if (userRep.findAll().isEmpty()) {
+			user = userRep.save(new UserAccount(null, "Yves Mattos", "yvesmattos@gmail.com"));
+		} else {
+			user = userRep.getOne(1);
+		}
 
 		Despesa despesa = new Despesa(null, dto.getNomeDespesa(), dto.getFavorecido(), dto.getFormaPagamento(),
 				dto.getMeioPagamento(), dto.getMesReferencia(), dto.getDataVencimento(), dto.getDataPagamento(),

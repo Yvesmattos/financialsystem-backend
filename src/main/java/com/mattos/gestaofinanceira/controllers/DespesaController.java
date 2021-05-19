@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.mattos.gestaofinanceira.domain.Despesa;
 import com.mattos.gestaofinanceira.dto.DespesaNewDTO;
+import com.mattos.gestaofinanceira.dto.DespesaPageDTO;
 import com.mattos.gestaofinanceira.dto.DespesaUpdateDTO;
 import com.mattos.gestaofinanceira.services.DespesaService;
 
@@ -35,25 +36,28 @@ public class DespesaController {
 
 	@PostMapping
 	public ResponseEntity<Void> insert(@Valid @RequestBody DespesaNewDTO dto) {
-
 		Despesa despesa = service.fromDTO(dto);
 		despesa = service.insert(despesa);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(despesa.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(despesa.getId())
+				.toUri();
 
 		return ResponseEntity.created(uri).build();
 	}
-	
+
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Despesa> find(@PathVariable Integer id) {	
+	public ResponseEntity<Despesa> find(@PathVariable Integer id) {
 
 		Despesa despesa = service.find(id);
 
 		return ResponseEntity.ok().body(despesa);
 	}
-	
-	@GetMapping(value = "/pages")
-	public ResponseEntity<Page<Despesa>> findPage(@PageableDefault(size = 10, sort = {"dataVencimento", "id"}, direction = Direction.DESC) Pageable pageable){
-		Page<Despesa> page = service.findPage(pageable);
+
+	@PostMapping(value = "/pages")
+	public ResponseEntity<Page<Despesa>> findPage(
+			@PageableDefault(size = 5, sort = { "dataVencimento", "id" }, direction = Direction.DESC) Pageable pageable,
+			@RequestBody DespesaPageDTO dto) {
+		Page<Despesa> page = service.findAllPaginated(dto, pageable);
+
 		return ResponseEntity.ok(page);
 	}
 
@@ -70,16 +74,16 @@ public class DespesaController {
 		Despesa despesa = service.fromDTO(dto);
 		despesa.setId(id);
 		despesa = service.update(despesa);
-		
+
 		return ResponseEntity.noContent().build();
 
 	}
-	
-	@DeleteMapping(value="/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Integer id){
-		
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+
 		service.delete(id);
-		
+
 		return ResponseEntity.noContent().build();
 
 	}

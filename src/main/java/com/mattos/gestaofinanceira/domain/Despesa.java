@@ -207,4 +207,15 @@ public class Despesa implements Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Despesa [id=" + id + ", nomeDespesa=" + nomeDespesa + ", favorecido=" + favorecido + ", formaPagamento="
+				+ formaPagamento + ", meioPagamento=" + meioPagamento + ", dataAlteracao=" + dataAlteracao
+				+ ", mesReferencia=" + mesReferencia + ", dataVencimento=" + dataVencimento + ", dataPagamento="
+				+ dataPagamento + ", valorDespesa=" + valorDespesa + ", valorPago=" + valorPago + ", situacao="
+				+ situacao + ", user=" + user + "]";
+	}
+	
+	
 }

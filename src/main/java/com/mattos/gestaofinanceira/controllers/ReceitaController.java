@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.mattos.gestaofinanceira.domain.Receita;
 import com.mattos.gestaofinanceira.dto.ReceitaNewDTO;
+import com.mattos.gestaofinanceira.dto.ReceitaPageDTO;
 import com.mattos.gestaofinanceira.dto.ReceitaUpdateDTO;
 import com.mattos.gestaofinanceira.services.ReceitaService;
 
@@ -35,6 +36,7 @@ public class ReceitaController {
 
 	@PostMapping
 	public ResponseEntity<Void> insert(@Valid @RequestBody ReceitaNewDTO dto) {
+		System.out.println(dto.getSituacao());
 		Receita receita = service.fromDTO(dto);
 		receita = service.insert(receita);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(receita.getId())
@@ -51,10 +53,12 @@ public class ReceitaController {
 		return ResponseEntity.ok().body(receita);
 	}
 
-	@GetMapping(value = "/pages")
-	public ResponseEntity<Page<Receita>> findPage(@PageableDefault(size = 10, sort = {"mesReferencia", "id"}, direction = Direction.DESC ) Pageable pageable) {
+	@PostMapping(value = "/pages")
+	public ResponseEntity<Page<Receita>> findPage(
+			@PageableDefault(size = 5, sort = { "mesReferencia", "id" }, direction = Direction.ASC) Pageable pageable,
+			@RequestBody ReceitaPageDTO dto) {
+		Page<Receita> page = service.findAllPaginated(dto,pageable);
 		
-		Page<Receita> page = service.findPage(pageable);
 		return ResponseEntity.ok(page);
 	}
 
@@ -69,6 +73,7 @@ public class ReceitaController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Void> update(@PathVariable Integer id, @RequestBody ReceitaUpdateDTO dto) {
 		Receita receita = service.fromDTO(dto);
+		System.out.println(receita);
 		receita.setId(id);
 		receita = service.update(receita);
 
